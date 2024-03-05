@@ -1,15 +1,10 @@
 const database = include("/databaseConnection");
 
-async function getRestaurants(restaurant_id) {
+async function getRestaurants() {
   let sqlQuery = `
         SELECT restaurant_id, name, description
         FROM restaurant;
     `;
-    let params = {
-      restaurant_id: restaurant_id,
-      
-    };
-    console.log(params)
   try {
     const results = await database.query(sqlQuery);
     console.log("results: ", results[0]);
@@ -20,6 +15,27 @@ async function getRestaurants(restaurant_id) {
     return null;
   }
 }
+
+async function getRestaurantById(restaurantId) {
+  let sqlQuery = `
+    SELECT name
+    FROM restaurant
+    WHERE restaurant_id = :restaurantId;
+  `;
+
+  let params = {
+    restaurantId: restaurantId,
+  };
+
+  try {
+    const results = await database.query(sqlQuery, params);
+    return results[0][0];
+  } catch (err) {
+    console.log('Error selecting a restaurant:', err);
+    throw err;
+  }
+}
+
 
 
 async function addRestaurant(postData) {
@@ -66,7 +82,7 @@ async function deleteRestaurant(restaurantId) {
   }
 }
 
-async function getReviews() {
+async function getReviews(restaurantId) {
   let sqlReviews = `
   SELECT review_id,
   restaurant_id,
@@ -90,23 +106,23 @@ async function getReviews() {
 }
 
 async function deleteReview(reviewId) {
-  let sqlDeleteRestaurant = `
+  let sqlDeleteReviews = `
         DELETE FROM review
         WHERE review_id = :reviewId
     `;
     let params = {
       reviewId: reviewId,
     };
-  console.log(sqlDeleteRestaurant);
+  console.log(sqlDeleteReviews);
   try {
-    await database.query(sqlDeleteRestaurant, params);
+    await database.query(sqlDeleteReviews, params);
     return true;
   } catch (err) {
     console.log(err);
     return false;
   }
 }
-addReview
+
 
 async function addReview(postData) {
   console.log("postData: ", postData);
@@ -131,4 +147,4 @@ async function addReview(postData) {
     return false;
   }
 }
-module.exports = { getRestaurants, addRestaurant, deleteRestaurant, addReview, deleteReview, getReviews };
+module.exports = { getRestaurants, addRestaurant, deleteRestaurant, addReview, deleteReview, getReviews, getRestaurantById };
