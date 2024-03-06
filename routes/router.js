@@ -61,49 +61,45 @@ router.get('/deleteRestaurant', async (req, res) => {
     const restaurantId = req.query.id;
   
     try {
-      const getRestaurant = await dbModel.getRestaurantById(restaurantId);
-      const result = await dbModel.getReviewRestaurant(restaurantId);
-      res.render("rate", { restaurant: result, name: getRestaurant, id: restaurantId });
-  
-      console.log(result);
+        if (!restaurantId) {
+            throw new Error("Restaurant ID is missing");
+        }
+
+        const getRestaurant = await dbModel.getRestaurantById(restaurantId);
+        if (!getRestaurant) {
+            throw new Error("Restaurant not found");
+        }
+
+        const result = await dbModel.getRestaurantById(restaurantId);
+        if (!result) {
+            throw new Error("Reviews not found for the restaurant");
+        }
+
+        res.render("rate", { restaurant: result, name: getRestaurant, id: restaurantId });
+        console.log(result);
     } catch (err) {
-      res.render("error", { message: "Error reading from MySQL" });
-      console.log("Error reading from mysql");
+        console.error("Error reading from MySQL:", err);
+        res.render("error", { message: "Error reading from MySQL: " + err.message });
     }
-  });
+});
+
   
 router.post('/addReview', async (req, res) => {
   try {
     const { reviewer_name, details, rating } = req.body;
-    if (!reviewer_name || !details || !rating) {
+    if (!reviewer_name || !details || !rating) {  
       return res.status(400).send('Please provide all required fields.');
     }
 
-   
-    await addReviews({ reviewer_name, details, rating });
+    await dbModel.addReview({ restauarant_id, reviewer_name, details, rating });
 
-    
     res.redirect('/'); 
   } catch (error) {
     console.error('Error adding review:', error);
     res.status(500).send('Internal Server Error'); 
   }
 });
-
-router.get("/deleteReview", async (req, res) => {
-  let restaurantID = req.query.id;
-  if (restaurantID) {
-    const success = await dbModel.deleteReview(restaurantID);
-    console.log("Delete Here:")
-    if (success) {
-      res.redirect("/");
-    } else {
-      res.render("error", { message: "Error writing to MySQL" });
-      console.log("Error writing to mysql");
-      console.log(err);
-    }
-  }
-});
+``
 
 module.exports = router;
 

@@ -11,41 +11,40 @@
         <div class="column is-10 is-offset-1 notification is-info is-light box container">
           <div class="title">Restaurants</div>
           <% if (locals.restaurant) { %>
-          <div class="table-container">
-            <table class="table is-bordered is-hoverable is-striped is-narrow">
-              <thead>
+            <div class="table-container">
+              <table class="table is-bordered is-hoverable is-striped is-narrow">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                </thead>
+                <% let i=0; %> <% for(let i=0; i < locals.restaurant.length; i++) { %>
                 <tr>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>&nbsp;</th>
-                  <th>&nbsp;</th>
-                </tr>
-              </thead>
-              <% let i=0; %> <% for(i=0; i < restaurant.length; i++) { %>
-              <tr>
-                <td><%= restaurant[i].name %></td>
-                <td><%= restaurant[i].description %></td>
-                <td>
+                  <td><%= locals.restaurant[i].name %></td>
+                  <td><%= locals.restaurant[i].description %></td>
                   <td>
-                    <a href="/deleteRestaurant?id=<%= restaurant[i].restaurant_id %>">
-                      <span class="icon is-small">  <i class="fas fa-trash"></i> </span
-                    ></a>
+                    <a href="/deleteRestaurant?id=<%= locals.restaurant[i].restaurant_id %>">
+                      <span class="icon is-small">  <i class="fas fa-trash"></i> </span>
+                    </a>
                   </td>
                   <td>
-                    <a href="/review?id=<%= restaurant[i].restaurant_id %>">
-                      <span class="icon is-small"> <i class="fas fa-star"></i> </span
-                    ></a>
+                    <a href="/review?id=<%= locals.restaurant[i].restaurant_id %>">
+                      <span class="icon is-small"> <i class="fas fa-star"></i> </span>
+                    </a>
                   </td>
-              </tr>
-              <% } %>
-              <tfoot>
-                <tr>
-                  <td colspan="4">There are <%= i %> restaurants.</td>
                 </tr>
-              </tfoot>
-            </table>
-          </div>
-          <% } %>
+                <% } %>
+                <tfoot>
+                  <tr>
+                    <td colspan="4">There are <%= locals.restaurant.length %> restaurants.</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <% } %>            
           <form action="/addRestaurant" method="post">
             <div class="field is-horizontal">
               <div class="field-label is-normal">

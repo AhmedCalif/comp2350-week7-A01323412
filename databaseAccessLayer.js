@@ -123,28 +123,29 @@ async function deleteReview(reviewId) {
   }
 }
 
-
 async function addReview(postData) {
   console.log("postData: ", postData);
-  let sqlInsertRestaurant = `
-        INSERT INTO review ( restaurant_id, reviewer_name, details, rating)
-        VALUES (:restaurant_id, :name, :review, :rating);
+  let sqlInsertReview = `
+        INSERT INTO review (restaurant_id, reviewer_name, details, rating)
+        VALUES (:restaurant_id, :reviewer_name, :details, :rating);
     `;
   let params = {
     restaurant_id: postData.restaurant_id,
-    name: postData.name,
-    review: postData.review,
+    reviewer_name: postData.reviewer_name,
+    details: postData.details,
     rating: postData.rating
   };
-  console.log(sqlInsertRestaurant);
+  console.log("SQL Query:", sqlInsertReview);
+  console.log("Params:", params);
   try {
-    const results = await database.query(sqlInsertRestaurant, params);
+    const results = await database.query(sqlInsertReview, params);
     let insertedID = results.insertId;
-
+    console.log("Review added successfully. Insert ID:", insertedID);
     return true;
   } catch (err) {
-    console.log(err);
+    console.error("Error adding review:", err);
     return false;
   }
 }
+
 module.exports = { getRestaurants, addRestaurant, deleteRestaurant, addReview, deleteReview, getReviews, getRestaurantById };
